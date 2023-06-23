@@ -36,8 +36,23 @@ ADD_CUSTOM_COMMAND(
   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/../protocols/wlm-input-activity-v1.xml
   VERBATIM)
 
-ADD_LIBRARY(
-  wlm_protocol_headers
-  OBJECT
-  wlm-input-activity-v1-client.h
-  wlm-input-activity-v1-server.h)
+ADD_CUSTOM_COMMAND(
+  OUTPUT wlm-input-activity-v1-server.c
+  COMMAND ${WAYLAND_SCANNER_EXECUTABLE} private-code ${CMAKE_CURRENT_SOURCE_DIR}/../protocols/wlm-input-activity-v1.xml wlm-input-activity-v1-server.c
+  DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/../protocols/wlm-input-activity-v1.xml
+  VERBATIM)
+
+ADD_LIBRARY(wlm_protocol_headers STATIC)
+TARGET_SOURCES(
+  wlm_protocol_headers PRIVATE
+  wlm-input-activity-v1-server.c)
+
+SET_TARGET_PROPERTIES(
+  wlm_protocol_headers PROPERTIES
+  VERSION 1.0
+  PUBLIC_HEADER "wlm-input-activity-v1-server.h")
+
+TARGET_COMPILE_OPTIONS(
+  wlm_protocol_headers PRIVATE
+  ${WAYLAND_CFLAGS}
+  ${WAYLAND_CFLAGS_OTHER})

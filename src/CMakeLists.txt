@@ -15,6 +15,7 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.13)
 
 SET(SOURCES
+  activity.c
   button.c
   cairo_util.c
   clip.c
@@ -81,7 +82,7 @@ SET(HEADERS
 )
 
 ADD_EXECUTABLE(wlmaker wlmaker.c ${SOURCES} ${HEADERS})
-ADD_DEPENDENCIES(wlmaker protocol_headers decorations toolkit)
+ADD_DEPENDENCIES(wlmaker wlm_protocol_headers protocol_headers decorations toolkit)
 
 TARGET_COMPILE_DEFINITIONS(
   wlmaker PRIVATE WLMAKER_ICON_DATA_DIR="${CMAKE_INSTALL_FULL_DATAROOTDIR}/icons/wlmaker")
@@ -96,6 +97,7 @@ TARGET_COMPILE_OPTIONS(
 TARGET_INCLUDE_DIRECTORIES(
   wlmaker PRIVATE
   ${PROJECT_BINARY_DIR}/third_party/protocols
+  ${PROJECT_BINARY_DIR}/protocols
   ${CAIRO_INCLUDE_DIRS}
   ${LIBDRM_INCLUDE_DIRS}
   ${PIXMAN_INCLUDE_DIRS}
@@ -108,6 +110,7 @@ TARGET_LINK_LIBRARIES(
   wlmaker PRIVATE
   base
   decorations
+  wlm_protocol_headers
   PkgConfig::CAIRO
   PkgConfig::LIBDRM
   PkgConfig::PIXMAN
@@ -117,10 +120,11 @@ TARGET_LINK_LIBRARIES(
 )
 
 ADD_EXECUTABLE(wlmaker_test wlmaker_test.c ${SOURCES} ${HEADERS})
-ADD_DEPENDENCIES(wlmaker_test protocol_headers decorations toolkit)
+ADD_DEPENDENCIES(wlmaker_test wlm_protocol_headers protocol_headers decorations toolkit)
 TARGET_INCLUDE_DIRECTORIES(
   wlmaker_test PRIVATE
   ${PROJECT_BINARY_DIR}/third_party/protocols
+  ${PROJECT_BINARY_DIR}/protocols
   ${CAIRO_INCLUDE_DIRS}
   ${LIBDRM_INCLUDE_DIRS}
   ${PIXMAN_INCLUDE_DIRS}
@@ -133,6 +137,7 @@ TARGET_LINK_LIBRARIES(
   wlmaker_test PRIVATE
   base
   decorations
+  wlm_protocol_headers
   PkgConfig::CAIRO
   PkgConfig::LIBDRM
   PkgConfig::PIXMAN
