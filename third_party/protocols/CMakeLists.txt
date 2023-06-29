@@ -14,6 +14,7 @@
 
 CMAKE_MINIMUM_REQUIRED(VERSION 3.13)
 
+# TODO(kaeser@gubbe.ch): Replace with WaylandProtocol.cmake functionality.
 FIND_PROGRAM(
   WAYLAND_SCANNER_EXECUTABLE
   NAMES wayland-scanner

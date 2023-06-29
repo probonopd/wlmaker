@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<protocol name="wlmaker_input_activity_unstable_v1">
+  <copyright>
+    Copyright 2023 Google LLC
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+  </copyright>
+
+  <interface name="zwlmaker_input_activity_manager_v1" version="1">
+    <description summary="Input Activity Manager">
+      This interface allows clients to subscribe for receiving aggregated
+      input activity, eg. from pointer or keyboard events.
+    </description>
+
+    <request name="destroy" type="destructor">
+      <description summary="Destroy the manager object.">
+        Destroys the input activity manager.        
+      </description>
+    </request>
+
+    <request name="get_pointer_aggregator">
+      <description summary="Create a new pointer aggregator.">
+        Creates a pointer aggregator for the client to receive pointer
+        updates.
+      </description>
+      <arg name="id" type="new_id" interface="zwlmaker_input_activity_pointer_aggregator_v1"/>
+    </request>
+  </interface>
+
+  <interface name="zwlmaker_input_activity_pointer_aggregator_v1" version="1">
+    <description summary="Input Activity Pointer Aggregator">
+      Aggregator that provides pointer input activity.
+    </description>
+
+    <request name="destroy" type="destructor">
+      <description summary="Destroy the pointer aggregator.">
+        Destroys the pointer aggregator.        
+      </description>
+    </request>
+
+    <event name="position">
+      <description summary="Current pointer position">
+        Provides updates of the current pointer position, whenever the
+        pointer moves, potentially rate-limited.
+      </description>
+      <arg name="x" type="uint"/>
+      <arg name="y" type="uint"/>
+    </event>
+  </interface>
+</protocol>
+

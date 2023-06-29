@@ -40,6 +40,7 @@ typedef struct _wlmaker_server_t wlmaker_server_t;
 
 #include "cursor.h"
 #include "output.h"
+#include "input_activity.h"
 #include "keyboard.h"
 #include "layer_shell.h"
 #include "view.h"
@@ -88,6 +89,9 @@ struct _wlmaker_server_t {
     /** Listener for `change` signals raised by `wlr_output_layout`. */
     struct wl_listener        output_layout_change_listener;
 
+    /** Activity protocol handler. */
+    wlmaker_input_activity_manager_t *wia_activity_ptr;
+
     // From tinywl.c: A few hands-off wlroots interfaces.
 
     /** The compositor is necessary for clients to allocate surfaces. */
@@ -108,6 +112,7 @@ struct _wlmaker_server_t {
     wlmaker_xdg_decoration_manager_t *xdg_decoration_manager_ptr;
     /** Layer shell handler. */
     wlmaker_layer_shell_t     *layer_shell_ptr;
+
 
     /** The list of outputs. */
     bs_dllist_t               outputs;

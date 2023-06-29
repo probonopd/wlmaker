@@ -1,6 +1,6 @@
 /* ========================================================================= */
 /**
- * @file activity.h
+ * @file input_activity.h
  *
  * @copyright
  * Copyright 2023 Google LLC
@@ -17,8 +17,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef __ACTIVITY_H__
-#define __ACTIVITY_H__
+#ifndef __INPUT_ACTIVITY_H__
+#define __INPUT_ACTIVITY_H__
 
 #include <wayland-server-core.h>
 
@@ -26,15 +26,31 @@
 extern "C" {
 #endif  // __cplusplus
 
-typedef struct _wlmaker_activity_t wlmaker_activity_t;
+/** Forward declaration: State of input activity manager. */
+typedef struct _wlmaker_input_activity_manager_t wlmaker_input_activity_manager_t;
 
-wlmaker_activity_t *wlmaker_activity_create(
+/**
+ * Creates an input activity manager.
+ *
+ * @param wl_display_ptr
+ *
+ * @return Handle of the input activity manager or NULL on error. The pointer
+ *     must be destroyed by @ref wlmaker_input_activity_manager_destroy.
+ */
+wlmaker_input_activity_manager_t *wlmaker_input_activity_manager_create(
     struct wl_display *wl_display_ptr);
-void wlmaker_activity_destroy(wlmaker_activity_t *activity_ptr);
+
+/**
+ * Destroys the input activity manager.
+ *
+ * @param wia_manager_ptr
+ */
+void wlmaker_input_activity_manager_destroy(
+    wlmaker_input_activity_manager_t *wia_manager_ptr);
 
 #ifdef __cplusplus
 }  // extern "C"
 #endif  // __cplusplus
 
-#endif /* __ACTIVITY_H__ */
-/* == End of activity.h ================================================== */
+#endif /* __INPUT_ACTIVITY_H__ */
+/* == End of input_activity.h ============================================== */

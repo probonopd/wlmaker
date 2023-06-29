@@ -15,7 +15,6 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.13)
 
 SET(SOURCES
-  activity.c
   button.c
   cairo_util.c
   clip.c
@@ -25,6 +24,7 @@ SET(SOURCES
   dock_app.c
   dock.c
   iconified.c
+  input_activity.c
   interactive.c
   keyboard.c
   layer_shell.c
@@ -58,6 +58,7 @@ SET(HEADERS
   dock_app.h
   dock.h
   iconified.h
+  input_activity.h
   interactive.h
   keyboard.h
   layer_shell.h
@@ -82,7 +83,7 @@ SET(HEADERS
 )
 
 ADD_EXECUTABLE(wlmaker wlmaker.c ${SOURCES} ${HEADERS})
-ADD_DEPENDENCIES(wlmaker wlm_protocol_headers protocol_headers decorations toolkit)
+ADD_DEPENDENCIES(wlmaker wlmaker_protocols protocol_headers decorations toolkit)
 
 TARGET_COMPILE_DEFINITIONS(
   wlmaker PRIVATE WLMAKER_ICON_DATA_DIR="${CMAKE_INSTALL_FULL_DATAROOTDIR}/icons/wlmaker")
@@ -110,7 +111,7 @@ TARGET_LINK_LIBRARIES(
   wlmaker PRIVATE
   base
   decorations
-  wlm_protocol_headers
+  wlmaker_protocols
   PkgConfig::CAIRO
   PkgConfig::LIBDRM
   PkgConfig::PIXMAN
@@ -120,7 +121,7 @@ TARGET_LINK_LIBRARIES(
 )
 
 ADD_EXECUTABLE(wlmaker_test wlmaker_test.c ${SOURCES} ${HEADERS})
-ADD_DEPENDENCIES(wlmaker_test wlm_protocol_headers protocol_headers decorations toolkit)
+ADD_DEPENDENCIES(wlmaker_test wlmaker_protocols protocol_headers decorations toolkit)
 TARGET_INCLUDE_DIRECTORIES(
   wlmaker_test PRIVATE
   ${PROJECT_BINARY_DIR}/third_party/protocols
@@ -137,7 +138,7 @@ TARGET_LINK_LIBRARIES(
   wlmaker_test PRIVATE
   base
   decorations
-  wlm_protocol_headers
+  wlmaker_protocols
   PkgConfig::CAIRO
   PkgConfig::LIBDRM
   PkgConfig::PIXMAN
