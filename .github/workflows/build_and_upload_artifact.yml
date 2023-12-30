@@ -33,6 +33,8 @@ jobs:
         - name: Build dependencies
           run: |
                cd dependencies
+               export LD_LIBRARY_PATH="${HOME}/.local/lib/x86_64-linux-gnu"
+               export PKG_CONFIG_PATH="${HOME}/.local/lib/x86_64-linux-gnu/pkgconfig/:${HOME}/.local/share/pkgconfig/"
                cmake -DCMAKE_INSTALL_PREFIX:PATH=${HOME}/.local -B build
                # build AND install into ${HOME}/.local
                (cd build && make)
