@@ -25,7 +25,9 @@ jobs:
           uses: actions/checkout@v2
         
         - name: Checkout submodules
-          run: git submodule update --init --recursive --merge
+          run: |
+               git config --global --add safe.directory /__w/wlmaker/wlmaker
+               git submodule update --init --recursive --merge
 
         - name: Build dependencies
           run: |
