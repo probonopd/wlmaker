@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=wlmaker
+Type=Application
+Comment=Wayland compositor
+Exec=wlmaker
+Icon=wlmaker
+Categories=System;

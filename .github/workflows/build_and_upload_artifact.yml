@@ -48,10 +48,33 @@ jobs:
                cmake ..
                make -j
                make install DESTDIR=appdir
+
+        - name: Deploy to AppDir
+          run: |
+               export LD_LIBRARY_PATH="${HOME}/.local/lib/$(dpkg-architecture -qDEB_HOST_MULTIARCH)"
+               cd build
+               mkdir -p appdir/usr/share/applications/ appdir/usr/share/icons/hicolor/48x48/apps/
+               cp ../icons/terminal-48x48.png appdir/usr/share/icons/hicolor/48x48/apps/wlmaker.png # FIXME: Use proper icon
+               cp ../src/wlmaker.desktop appdir/usr/share/applications/
+               ARCHITECTURE=$(uname -m)
+               wget -c -q https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "appimagetool-.*-${ARCHITECTURE}.AppImage" | head -n 1 | cut -d '"' -f 2)
+               chmod +x appimagetool-*.AppImage
+               # Deploy dependencies into AppDir
+               ./appimagetool-*.AppImage -s deploy ./appdir/usr/share/applications/*.desktop --appimage-extract-and-run
                zip -r ../appdir.zip appdir
+
+        - name: Convert to AppImage
+          run: |
+               cd build
+               export VERSION=$(git rev-parse --short HEAD)
+               ./appimagetool-*.AppImage ./appdir --appimage-extract-and-run # Turn AppDir into AppImage
+               echo "::set-output name=path::$(ls *.AppImage)"
 
         - name: Upload artifact
           uses: actions/upload-artifact@v2
+          #with:
+          #    name: appdir
+          #    path: appdir.zip
           with:
-              name: appdir
-              path: appdir.zip
+              name: wlmaker
+              path: build/*.AppImage
