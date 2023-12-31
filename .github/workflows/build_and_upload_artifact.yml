@@ -20,7 +20,7 @@ jobs:
                 apt-get install -y git cmake glslang-dev glslang-tools graphviz libgbm-dev libinput-dev libudev-dev libvulkan-dev \
                 libxcb-composite0-dev libxcb-dri3-dev libxcb-ewmh-dev libxcb-icccm4-dev libxcb-present-dev libxcb-render-util0-dev \
                 libxcb-res0-dev libxcb-xinput-dev libxkbcommon-dev meson plantuml xmlto xsltproc libwlroots-dev doxygen \
-                libexpat1-dev libexpat1 libxml2-dev libcairo2-dev libncurses-dev
+                libexpat1-dev libexpat1 libxml2-dev libcairo2-dev libncurses-dev wget zip file
 
         - name: Checkout code
           uses: actions/checkout@v2
@@ -45,13 +45,37 @@ jobs:
                export PKG_CONFIG_PATH="${HOME}/.local/lib/$(dpkg-architecture -qDEB_HOST_MULTIARCH)/pkgconfig/:${HOME}/.local/share/pkgconfig/"
                mkdir build
                cd build
-               cmake ..
+               cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr
                make -j
                make install DESTDIR=appdir
-               zip -r ../appdir.zip appdir
+
+        - name: Deploy to AppDir
+          run: |
+               export LD_LIBRARY_PATH="${HOME}/.local/lib/$(dpkg-architecture -qDEB_HOST_MULTIARCH)"
+               cd build
+               mkdir -p appdir/usr/share/applications/ appdir/usr/share/icons/hicolor/256x256/apps/
+               cp ../icons/terminal-48x48.png appdir/usr/share/icons/hicolor/256x256/apps/wlmaker.png # FIXME: Use proper 256x256 icon
+               cp ../src/wlmaker.desktop appdir/usr/share/applications/
+               ARCHITECTURE=$(uname -m)
+               wget -c -q https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "appimagetool-.*-${ARCHITECTURE}.AppImage" | head -n 1 | cut -d '"' -f 2)
+               chmod +x appimagetool-*.AppImage
+               # Deploy dependencies into AppDir
+               ./appimagetool-*.AppImage -s deploy ./appdir/usr/share/applications/*.desktop --appimage-extract-and-run
+               # zip -r ../appdir.zip appdir
+
+        - name: Convert to AppImage
+          run: |
+               cd build
+               export VERSION=$(git rev-parse --short HEAD)
+               ./appimagetool-*.AppImage ./appdir --appimage-extract-and-run # Turn AppDir into AppImage
+               chmod +x wlmaker*.AppImage # Is this preserved by the zipping that the "Upload artifact" step implicitly does?
+               echo "::set-output name=path::$(ls wlmaker*.AppImage)"
 
         - name: Upload artifact
           uses: actions/upload-artifact@v2
+          # with:
+          #     name: appdir
+          #     path: appdir.zip
           with:
-              name: appdir
-              path: appdir.zip
+              name: wlmaker
+              path: build/*.AppImage
