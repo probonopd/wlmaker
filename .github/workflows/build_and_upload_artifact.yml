@@ -45,7 +45,7 @@ jobs:
                export PKG_CONFIG_PATH="${HOME}/.local/lib/$(dpkg-architecture -qDEB_HOST_MULTIARCH)/pkgconfig/:${HOME}/.local/share/pkgconfig/"
                mkdir build
                cd build
-               cmake ..
+               cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr
                make -j
                make install DESTDIR=appdir
 
